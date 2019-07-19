@@ -1,14 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { HashRouter as Router, Route, Switch, Link, withRouter } from 'react-router-dom';
+import { Route, Switch, Link, withRouter } from 'react-router-dom';
 
 import { MainState } from '../store';
 import { HistoryState, RecordState } from '../store/types';
 import { addHistory, addRecord } from '../store/actions';
 
 import { Layout, Row, Col, Icon, Breadcrumb } from 'antd';
-
-import { ShowItem } from './showitem';
 
 import '../../style/index.css'; 
 
@@ -21,10 +19,27 @@ interface MainProps {
   addRecord: typeof addRecord;
 }
 
+interface NavigationProps {
+  link: string;
+  show: string;
+  component: JSX.Element;
+}
+
+const stock = () => (<div>home</div>);
+const history = () => (<div>history</div>);
+const statistic = () => (<div>statistic</div>);
+
+const navigationList: Array<NavigationProps> = [
+  {link:'/', show:'', component: stock()},
+  {link:'/history', show:'history', component: history()},
+  {link:'/statistic', show:'statistic', component: statistic()},
+];
+
 class Main extends React.Component<MainProps>{
   state = { 
     isReady: false,
     isStart: false,
+    breadcrumbItems: '/'
   };
 
   constructor(props:any) {
@@ -43,54 +58,73 @@ class Main extends React.Component<MainProps>{
     }
   }
 
-  render(){
+  getBreadcrumb = (path: string) => {
+    let showcache = '/';
+    for(let item of navigationList){
+      if(path === item.link){showcache = item.show; break; }
+    }
 
-    const APP1 = ()=>{return <div>app1</div>}
-    const APP2 = ()=>{return <div>app2</div>}
-    const APP3 = ()=>{return <div>app3</div>}
-   
+    const home = (<Breadcrumb.Item key="home"> <Link to="/">stock</Link> </Breadcrumb.Item> );
+    
+
+    const pathsplit = showcache.split('/');
+    const extraBreadcrumbItems = pathsplit.map((_, index)=>{
+      const url = `/${pathsplit.slice(0, index + 1).join('/')}`;
+      return (
+        <Breadcrumb.Item key={url}>
+          <Link to={url}>{url}</Link>
+        </Breadcrumb.Item>
+      );
+    });
+    const breadcrumbItems = [
+      <Breadcrumb.Item key="home">
+        <Link to="/">stock</Link>
+      </Breadcrumb.Item>,
+    ].concat(extraBreadcrumbItems);
+    return <Breadcrumb>{...breadcrumbItems}</Breadcrumb>;
+  }
+
+  render(){
     if(this.state.isReady){
       // console.log(this.state.showState);
       const url: string = "https://github.com/qqwqqk/Stock.github.io";
       const target: string = "_blank";
       return (
-        <Router>
-          <Layout className="theme">
-            <Header style={{ background: 'transparent', margin: '0 12%', minWidth: 720}}>
-              <Row type='flex' align='middle' className='showinfo'>
-                <Col span={4} style={{textAlign:"center"}}> </Col>
-                <Col span={16} style={{fontSize: '32px'}}>
-                  <Breadcrumb>
-                    <Breadcrumb.Item>五月钦铭</Breadcrumb.Item>
-                    <Breadcrumb.Item>test1</Breadcrumb.Item>
-                  </Breadcrumb> 
-                </Col>
-                <Col span={4} style={{textAlign:"center"}}> 
-                  <Icon type="github" style={{fontSize: '32px'}} onClick={()=>{ window.open(url, target) }}/> 
-                </Col>
-              </Row>
-            </Header>
-            <Content style={{ background: 'transparent' , margin: '0 20%', minWidth: 600}}>      
+        <Layout className="theme">
+          <Header style={{ background: 'transparent', margin: '0 12%', minWidth: 720}}>
+            <Row type='flex' align='middle' className='showinfo'>
+              <Col span={4} style={{textAlign:"center"}}> </Col>
+              <Col span={16} style={{fontSize: '32px'}}>
+                {this.getBreadcrumb(this.state.breadcrumbItems)}
+              </Col>
+              <Col span={4} style={{textAlign:"center"}}> 
+                <Icon type="github" style={{fontSize: '32px'}} onClick={()=>{ window.open(url, target) }}/> 
+              </Col>
+            </Row> 
+          </Header>
+          <Content style={{ background: 'transparent' , margin: '0 20%', minWidth: 600}}>      
+            <div className="demo">
+              <div className="demo-nav">
+                <Link to="/" onClick={()=>{this.setState({breadcrumbItems: '/'})}}>Home</Link>
+                <Link to="/from" onClick={()=>{this.setState({breadcrumbItems: '/from'})}}>from</Link>
+                <Link to="/table" onClick={()=>{this.setState({breadcrumbItems: '/table'})}}>table</Link>
+              </div>
               <Switch>
-                <Route path="/app1" component={APP1} />
-                <Route path="/app2" component={APP2} />
-                <Route path="/app3" component={APP3} />
+                <Route path="/table" component={table} />
+                <Route path="/from" component={from} />
+                <Route render={home} />
               </Switch>
-            </Content>
-            <Footer style={{ background: 'transparent' , margin: '0 12%', minWidth: 720}}>
-              <Row gutter={{xs: 8, sm: 16, md: 24}}>
-                <Col span={20}>
-                  <Link to="/app1">Application1</Link>
-                  <Link to="/app2">Application2</Link>
-                  <Link to="/app3">Application3</Link>
-                </Col>
-                <Col span={4}>
-                  <Icon type={this.state.isStart ? 'pause' : 'caret-right'} className='startctrl'/>
-                </Col>
-              </Row>
-            </Footer>
-          </Layout>
-        </Router>
+            </div>
+          </Content>
+          <Footer style={{ background: 'transparent' , margin: '0 12%', minWidth: 720}}>
+            <Row gutter={{xs: 8, sm: 16, md: 24}}>
+              <Col span={20}> </Col>
+              <Col span={4}>
+                <Icon type={this.state.isStart ? 'pause' : 'caret-right'} className='startctrl'/>
+              </Col>
+            </Row>
+          </Footer>
+        </Layout>
       )
     } else {
       // console.log(this.state.progress);
