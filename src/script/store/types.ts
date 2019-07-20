@@ -24,6 +24,7 @@ export interface AddRecord{
 export interface History{
   timestamp: number;
   price: number;
+  hold: number;
 }
 
 export interface Transaction{
@@ -41,6 +42,13 @@ export interface HistoryState{
 
 export interface RecordState{
   lists: Array<Transaction>;
+}
+
+export interface HoldState{
+  hold: number;
+  price: number;
+  buytotal: number;
+  selltotal: number;
 }
 
 export type HistoryActionType = AddHistory;

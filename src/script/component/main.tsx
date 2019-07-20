@@ -1,12 +1,16 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Route, Switch, Link, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { MainState } from '../store';
 import { HistoryState, RecordState } from '../store/types';
 import { addHistory, addRecord } from '../store/actions';
 
-import { Layout, Row, Col, Icon, Breadcrumb } from 'antd';
+import { Layout, Row, Col, Icon} from 'antd';
+
+import { InfoItem } from './infoitem';
+import { CtrlItem } from './ctrlitem';
+import { StockShow } from './stockshow';
 
 import '../../style/index.css'; 
 
@@ -19,27 +23,14 @@ interface MainProps {
   addRecord: typeof addRecord;
 }
 
-interface NavigationProps {
-  link: string;
-  show: string;
-  component: JSX.Element;
-}
-
-const stock = () => (<div>home</div>);
 const history = () => (<div>history</div>);
 const statistic = () => (<div>statistic</div>);
-
-const navigationList: Array<NavigationProps> = [
-  {link:'/', show:'', component: stock()},
-  {link:'/history', show:'history', component: history()},
-  {link:'/statistic', show:'statistic', component: statistic()},
-];
 
 class Main extends React.Component<MainProps>{
   state = { 
     isReady: false,
-    isStart: false,
-    breadcrumbItems: '/'
+    isUpdate: false,
+    showRange: [0,1]
   };
 
   constructor(props:any) {
@@ -53,76 +44,53 @@ class Main extends React.Component<MainProps>{
   }
 
   stockWatch = () => {
-    if(this.state.isStart){
-      console.log('start');
+    if(this.state.isUpdate){
+      const timestamp = new Date().getTime();
+      const currprice = Math.trunc( 100 * (0.8 + 0.4 * Math.random()) );
+
+      this.props.addHistory(timestamp, currprice);
+      // console.log(this.props.HistoryState);
+
+      if(this.state.showRange[0] === 0 && this.state.showRange[1] === 1){
+        this.setState({showRange:[timestamp, timestamp + 2 * 1000]})
+      }
     }
   }
 
-  getBreadcrumb = (path: string) => {
-    let showcache = '/';
-    for(let item of navigationList){
-      if(path === item.link){showcache = item.show; break; }
-    }
+  setUpdate = () => {
+    const state = this.state.isUpdate;
+    this.setState({isUpdate: !state})
+  }
 
-    const home = (<Breadcrumb.Item key="home"> <Link to="/">stock</Link> </Breadcrumb.Item> );
-    
-
-    const pathsplit = showcache.split('/');
-    const extraBreadcrumbItems = pathsplit.map((_, index)=>{
-      const url = `/${pathsplit.slice(0, index + 1).join('/')}`;
-      return (
-        <Breadcrumb.Item key={url}>
-          <Link to={url}>{url}</Link>
-        </Breadcrumb.Item>
-      );
-    });
-    const breadcrumbItems = [
-      <Breadcrumb.Item key="home">
-        <Link to="/">stock</Link>
-      </Breadcrumb.Item>,
-    ].concat(extraBreadcrumbItems);
-    return <Breadcrumb>{...breadcrumbItems}</Breadcrumb>;
+  setRange = (value: [number, number])=>{
+    this.setState({showRange: value});
   }
 
   render(){
     if(this.state.isReady){
-      // console.log(this.state.showState);
-      const url: string = "https://github.com/qqwqqk/Stock.github.io";
-      const target: string = "_blank";
       return (
         <Layout className="theme">
           <Header style={{ background: 'transparent', margin: '0 12%', minWidth: 720}}>
-            <Row type='flex' align='middle' className='showinfo'>
-              <Col span={4} style={{textAlign:"center"}}> </Col>
-              <Col span={16} style={{fontSize: '32px'}}>
-                {this.getBreadcrumb(this.state.breadcrumbItems)}
-              </Col>
-              <Col span={4} style={{textAlign:"center"}}> 
-                <Icon type="github" style={{fontSize: '32px'}} onClick={()=>{ window.open(url, target) }}/> 
-              </Col>
-            </Row> 
+            { InfoItem() }
           </Header>
           <Content style={{ background: 'transparent' , margin: '0 20%', minWidth: 600}}>      
-            <div className="demo">
-              <div className="demo-nav">
-                <Link to="/" onClick={()=>{this.setState({breadcrumbItems: '/'})}}>Home</Link>
-                <Link to="/from" onClick={()=>{this.setState({breadcrumbItems: '/from'})}}>from</Link>
-                <Link to="/table" onClick={()=>{this.setState({breadcrumbItems: '/table'})}}>table</Link>
-              </div>
-              <Switch>
-                <Route path="/table" component={table} />
-                <Route path="/from" component={from} />
-                <Route render={home} />
-              </Switch>
-            </div>
+            <Switch>
+              <Route path="/history" component={history} />
+              <Route path="/statistic" component={statistic} />
+              <Route 
+                render={
+                  () => StockShow({
+                    history: this.props.HistoryState, 
+                    record: this.props.RecordState,
+                    showRange: this.state.showRange,
+                    setRange: this.setRange
+                  })
+                } 
+              />
+            </Switch>
           </Content>
           <Footer style={{ background: 'transparent' , margin: '0 12%', minWidth: 720}}>
-            <Row gutter={{xs: 8, sm: 16, md: 24}}>
-              <Col span={20}> </Col>
-              <Col span={4}>
-                <Icon type={this.state.isStart ? 'pause' : 'caret-right'} className='startctrl'/>
-              </Col>
-            </Row>
+            { CtrlItem({upDate: this.state.isUpdate, setUpDate: this.setUpdate}) }
           </Footer>
         </Layout>
       )

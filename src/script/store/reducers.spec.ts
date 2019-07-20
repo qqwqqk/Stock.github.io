@@ -5,7 +5,8 @@ test('historyItem init test', ()=>{
   const price = 1234;
   const output = { 
     timestamp: timestamp,
-    price: price
+    price: price,
+    hold: 100
   };
   expect(historyItem(timestamp, price)).toEqual(output);
 });
@@ -16,7 +17,7 @@ test('recordItem init test', ()=>{
   const name= '';
   const type= 1;
   const price= 1234;
-  const quantity= 100;
+  const quantity= 1000000;
   const output = { 
     timestamp: timestamp,
     code: code, 
