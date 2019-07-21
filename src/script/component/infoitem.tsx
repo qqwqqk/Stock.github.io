@@ -4,7 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 
 const breadcrumbNameMap = new Map([
   ['/', 'Stock'],
-  ['/history', 'History'],
+  ['/record', 'Record'],
   ['/statistic', 'Statistic']
 ]);
 
@@ -37,7 +37,7 @@ export const InfoItem = () => {
   const target: string = "_blank";
   return (
     <Row type='flex' align='middle' className='showinfo'>
-      <Col span={4} style={{textAlign:"center"}}> </Col>
+      <Col span={4} style={{textAlign:"center"}}> <span className='showtitle'>Stock Demo</span> </Col>
       <Col span={16} style={{fontSize: '32px'}}>
         <BreadcrumbList />
       </Col>

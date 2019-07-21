@@ -1,15 +1,19 @@
 /*设置样式全局变量*/
 :root{
-    --background-color:#888888;
-    --font-color:#888888;
-    --font-size-show: 30px;
-    --font-size-btn: 18px;
-    --color-fire: #EE0000;
-    --color-water: #66CCFF;
-    --color-thunder: #FFB61E;
-    --color-wind: #39C5BB;
-    --color-light: #FFFBF0;
-    --color-dark: #9999FF;
+  --btn-size: 1vw;
+  --ctrl-size: 1.25vw;
+  --title-size: 1.5vw;
+  --theme-color:#FFB61E;
+  --white-mask1: rgba(255,255,255,0.2);
+  --white-mask2: rgba(255,255,255,0.4);
+  --white-mask3: rgba(255,255,255,0.6);
+  --white-mask4: rgba(255,255,255,0.8);
+  --white-mask5: rgba(255,255,255,1);
+  --black-mask1: rgba(0,0,0,0.2);
+  --black-mask2: rgba(0,0,0,0.4);
+  --black-mask3: rgba(0,0,0,0.6);
+  --black-mask4: rgba(0,0,0,0.8);
+  --black-mask5: rgba(0,0,0,1);
 }
 
 /* 引入antd样式*/
@@ -22,42 +26,171 @@
 }
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: transparent;
+  border-radius: 10px;
+  background-color: transparent;
 }
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: var(--background-color);
+  border-radius: 10px;
+  background: var(--theme-color);
 }
 
 /* index.css */
 body{
-  background-color: var(--color-water);
+  background-color: var(--theme-color);
 }
 .theme{
-  background-color: var(--color-water);
+  background-color: var(--theme-color);
 }
 
-.theme .showitem {
-  margin: 2% 0;
+.theme .layout-header{
+  background: var(--white-mask3);
+  margin: 0 12%;
+  border-radius: 0 0 30px 30px;
+  min-width: 720px;
 }
 
-.theme .showitem .ant-card{
-  border: 10px solid rgba(220,220,220,0.5);
-  margin: 0 8%;
+.theme .showtitle{
+  font-size: var(--title-size);
 }
 
-.theme .showlist .ant-card{
-  margin: auto;
+.theme .layout-header .ant-breadcrumb a{
+  color: var(--black-mask4);
+}
+
+.theme .layout-header .ant-breadcrumb a:hover{
+  color:  var(--theme-color);
+}
+
+.theme .layout-content{
+  background: transparent;
+  margin: 2% 20%;
+  min-width: 600px;
+  height: 50vh;
   overflow: hidden;
-  text-align: center;
-  border-radius: 20px;
-  border: 5px solid rgba(220,220,220,0.5);
 }
 
-.theme .showlist .rank-0{ padding: 0; }
-.theme .showlist .rank-1{ padding: 1%; }
-.theme .showlist .rank-2{ padding: 2%; }
+.theme .layout-content .showitem {
+  min-width: 600px;
+}
 
-.theme .showlist .fontsize{ font-size: 1.25vw; }
+.theme .layout-content .discshow{
+  margin: 5% 0;
+  height: 30vw;
+  min-height: 320px;
+  min-width: 150px;
+  overflow: hidden;
+  border-radius: 30px;
+  border: 10px solid transparent;
+}
+
+.theme .layout-content .discshow .brakgroundimage{
+  position: absolute;
+  width: 100%;
+}
+
+.theme .layout-content .disclist{
+  margin: 5% 0;
+  padding: 20px;
+  height: 30vw;
+  min-height: 320px;
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.theme .layout-content .ant-list{
+  padding: 20px 0;
+  text-align: center;
+}
+
+.theme .layout-content .ant-list .ant-list-item{
+  border: none;
+  padding: 4px 0;
+}
+
+.theme .layout-content .discshow .lyricshow{
+  position: absolute;
+  width: 100%;
+  bottom: 30px;
+  text-align: center;
+}
+
+.theme .layout-content .discshow .lyricshow .showempty{
+  border: none;
+}
+
+.theme .layout-content .discshow .lyricshow .showcontent{
+  width: 80%;
+  padding: 0;
+  color: var(--theme-color);
+  background-color: var(--white-mask4);
+  border: 2px outset var(--theme-color);
+  margin: auto;
+  border-radius: 17px;
+  overflow: hidden;
+}
+
+.theme .layout-content .discshow .lyricshow .lyricitem{
+  height: 100%;
+}
+
+.theme .layout-content .disclist .ant-list .ant-list-item .ant-btn{
+  width: 100%;
+  height: 24px;
+  padding: 0;
+  color: var(--black-mask4);
+  background-color: var(--white-mask5);
+  border: 2px outset var(--black-mask4);
+  margin: auto;
+  border-radius: 17px;
+  overflow: hidden;
+}
+
+.theme .layout-content .disclist .ant-list .ant-list-item .current{
+  color: var(--theme-color);
+  border: 2px solid var(--theme-color);
+}
+
+.theme .layout-content .disclist .ant-list .ant-list-item .musicitem{
+  font-size: var(--btn-size);
+}
+
+.theme .layout-footer{
+  background: var(--white-mask3);
+  margin: 0 12%;
+  border-radius: 30px;
+  min-width: 720px;
+}
+
+.theme .layout-footer .ctrlmenu .ctrllink{
+  font-size: var(--ctrl-size);
+  color: var(--black-mask4);
+}
+
+
+.ctrlslider .ant-slider{
+  background-color: var(--white-mask3);
+  border-radius: 5px;
+}
+
+.ctrlslider .ant-slider .ant-slider-rail{
+  background-color: var(--black-mask1);
+  border-radius: 5px;
+}
+
+.ctrlslider .ant-slider .ant-slider-track{
+  background-color: var(--theme-color);
+  border-radius: 5px;
+}
+
+.ctrlslider .ant-slider .ant-slider-handle{
+  background-color: var(--theme-color);
+  border: solid 2px var(--white-mask3);
+}
+
+.ctrlslider .ant-slider .ant-slider-handle:focus {
+  border-color: var(--white-mask4);
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}

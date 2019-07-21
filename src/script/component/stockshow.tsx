@@ -17,6 +17,9 @@ export const StockShow = (props: StockProps) =>{
 
   const min = props.showRange[0];
   const max = props.showRange[1];
+  const historySource = props.history.lists.filter((item)=>{return item.timestamp >= min && item.timestamp <= max});
+  const recordSource = props.record.lists.filter((item)=>{return item.timestamp >= min && item.timestamp <= max});
+
 
   let sliderMin = min;
   let sliderMax = max;
@@ -25,12 +28,15 @@ export const StockShow = (props: StockProps) =>{
     sliderMax = sliderMax > val.timestamp ? sliderMax : val.timestamp;
   }
 
-  const historySource = props.history.lists.filter((item)=>{return item.timestamp >= min && item.timestamp <= max});
-  const recordSource = props.record.lists.filter((item)=>{return item.timestamp >= min && item.timestamp <= max});
+  let showMin = max;
+  let showMax = min;
+  for(let val of historySource){
+    showMin = showMin < val.timestamp ? showMin : val.timestamp;
+    showMax = showMax > val.timestamp ? showMax : val.timestamp;
+  }
 
   const showScale = {
-    timestamp: { type: 'time', mask: 'HH:mm:ss', min: min, max: max, tickCount: 5, linear: false, range: [0, 1] },
-    amount: { tickCount: 5 }
+    timestamp: { type: 'time', mask: 'HH:mm:ss', min: showMin - 1, max: showMax + 1, linear: false, tickCount:7, range: [0, 1] }
   };
 
   if(historySource.length > 0 && recordSource.length == 0){ progress = 50;}
@@ -38,26 +44,15 @@ export const StockShow = (props: StockProps) =>{
 
   switch(progress){
     case 0:
-      return (
-        <div>
-          <Empty/>
-          <Slider
-            range
-            min={sliderMin}
-            max={sliderMax}
-            defaultValue={[min, max]}
-            onAfterChange={props.setRange}
-          />
-        </div>
-      )
+      return ( <Empty/> )
     case 50:
       return (
         <div>
-          <Chart height={280} data={historySource}  scale={showScale} padding='auto' animate={false} forceFit >
+          <Chart height={window.innerHeight * 2 / 5} data={historySource}  scale={showScale} padding='auto' animate={false} forceFit >
             <Tooltip crosshairs={{style:{strokeOpacity:0,fillOpacity:0}}}/>
             <View data={historySource} scale={showScale}>
-              <Axis name="timestamp" position="top" visible={false} />
-              <Axis name="total" position="left" grid={null} />
+              <Axis name="timestamp" position="bottom" visible={true} />
+              <Axis name="price" position="left" grid={null} />
               <Tooltip/>
               <Geom
                 type="line" position="timestamp*price" size={2} shape="smooth"
@@ -75,19 +70,20 @@ export const StockShow = (props: StockProps) =>{
             range
             min={sliderMin}
             max={sliderMax}
-            defaultValue={[min, max]}
-            onAfterChange={props.setRange}
+            tipFormatter={(value)=>{return `${new Date(value).toLocaleString()}`;}}
+            value={[min, max]}
+            onChange={props.setRange}
           />
         </div>
       )
     case 100:
       return (
         <div>
-          <Chart height={280} data={historySource}  scale={showScale} padding='auto' animate={false} forceFit >
+          <Chart height={window.innerHeight * 2 / 5} data={historySource}  scale={showScale} padding='auto' animate={false} forceFit >
             <Tooltip crosshairs={{style:{strokeOpacity:0,fillOpacity:0}}}/>
             <View data={historySource} scale={showScale}>
-              <Axis name="timestamp" position="top" visible={false} />
-              <Axis name="total" position="left" grid={null} />
+              <Axis name="timestamp" position="bottom" visible={true} />
+              <Axis name="price" position="left" grid={null} />
               <Tooltip/>
               <Geom
                 type="line" position="timestamp*price" size={2} shape="smooth"
@@ -101,7 +97,7 @@ export const StockShow = (props: StockProps) =>{
               />
             </View>
             <View data={recordSource} scale={showScale}>
-              <Axis name="timestamp" position="bottom"/>
+              <Axis name="timestamp" position="top" visible={false}/>
               <Axis name="quantity" position="right" grid={null} />
               <Tooltip crosshairs={{type:'cross'}}/>
               <Geom
@@ -145,8 +141,9 @@ export const StockShow = (props: StockProps) =>{
             range
             min={sliderMin}
             max={sliderMax}
-            defaultValue={[min, max]}
-            onAfterChange={props.setRange}
+            tipFormatter={(value)=>{return `${new Date(value).toLocaleString()}`;}}
+            value={[min, max]}
+            onChange={props.setRange}
           />
         </div>
       )

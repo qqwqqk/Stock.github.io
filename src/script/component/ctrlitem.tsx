@@ -9,21 +9,21 @@ interface CtrlProps {
 
 export const CtrlItem = (props: CtrlProps) =>{
   return (
-    <Row gutter={{xs: 8, sm: 16, md: 24}}>
-      <Col span={20}>
-        <div className="demo-nav">
-          <Link to="/">Stock</Link>
-          <Link to="/history">History</Link>
-          <Link to="/statistic">Statistic</Link>
-        </div> 
-      </Col>
-      <Col span={4}>
+    <Row type='flex' align='middle' justify='center' className='ctrlmenu'>
+      <Col span={2}></Col>
+      <Col span={2}> <Link className='ctrllink' to="/">Stock</Link> </Col>
+      <Col span={2}> <Link className='ctrllink' to="/record">History</Link> </Col>
+      <Col span={2}> <Link className='ctrllink' to="/statistic">Statistic</Link> </Col>
+      <Col span={12}></Col>
+      <Col span={2}>
         <Icon 
           type={ props.upDate ? 'pause' : 'caret-right' } 
           onClick={()=>{ props.setUpDate(); }}
-          className='startctrl'
+          style={{fontSize: '32px'}} 
+          className='ctrlbtn'
         />
       </Col>
+      <Col span={2}></Col>
     </Row>
   )
 }

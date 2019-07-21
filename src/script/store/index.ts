@@ -1,8 +1,8 @@
 import { createStore, combineReducers } from "redux";
 
-import { HistoryReducer, RecordReducer } from "./reducers";
+import { HoldReducer, RecordReducer, HistoryReducer } from "./reducers";
 
-const rootReducer = combineReducers({ historyState: HistoryReducer, recordState: RecordReducer });
+const rootReducer = combineReducers({ holdState:HoldReducer, recordState: RecordReducer, historyState: HistoryReducer });
 
 export type MainState = ReturnType<typeof rootReducer>;
 

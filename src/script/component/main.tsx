@@ -3,28 +3,32 @@ import { connect } from "react-redux";
 import { Route, Switch } from 'react-router-dom';
 
 import { MainState } from '../store';
-import { HistoryState, RecordState } from '../store/types';
-import { addHistory, addRecord } from '../store/actions';
+import { HoldState, HistoryState, RecordState } from '../store/types';
+import { setHold, buyHold, sellHold, initHold, addRecord, addHistory } from '../store/actions';
 
 import { Layout, Row, Col, Icon} from 'antd';
 
 import { InfoItem } from './infoitem';
 import { CtrlItem } from './ctrlitem';
 import { StockShow } from './stockshow';
+import { RecordShow } from './recordshow';
+import { StatisticShow } from './statisticshow';
 
 import '../../style/index.css'; 
 
 const { Header, Content, Footer } = Layout;
 
 interface MainProps {
-  HistoryState: HistoryState;
+  HoldState: HoldState;
   RecordState: RecordState;
-  addHistory: typeof addHistory;
+  HistoryState: HistoryState;
+  setHold: typeof setHold;
+  buyHold: typeof buyHold;
+  sellHold: typeof sellHold;
+  initHold: typeof initHold;
   addRecord: typeof addRecord;
+  addHistory: typeof addHistory;
 }
-
-const history = () => (<div>history</div>);
-const statistic = () => (<div>statistic</div>);
 
 class Main extends React.Component<MainProps>{
   state = { 
@@ -38,7 +42,7 @@ class Main extends React.Component<MainProps>{
     // console.log("main window loading");
 
     setTimeout(() => {
-      const stockwatch = setInterval(() => this.stockWatch(), 60 );
+      const stockwatch = setInterval(() => this.stockWatch(), 2 * 1000 );
       this.setState({stockwatch, isReady: true});
     }, 0);
   }
@@ -46,14 +50,37 @@ class Main extends React.Component<MainProps>{
   stockWatch = () => {
     if(this.state.isUpdate){
       const timestamp = new Date().getTime();
-      const currprice = Math.trunc( 100 * (0.8 + 0.4 * Math.random()) );
-
-      this.props.addHistory(timestamp, currprice);
-      // console.log(this.props.HistoryState);
+      let hold = this.props.HoldState.hold;
+      let preprice = this.props.HoldState.price;
 
       if(this.state.showRange[0] === 0 && this.state.showRange[1] === 1){
-        this.setState({showRange:[timestamp, timestamp + 2 * 1000]})
+        this.setState({showRange:[timestamp, timestamp + 20 * 1000]})
+        this.props.initHold(10000,1000);
+        hold = 10000; preprice = 1000;
       }
+
+      const currprice = preprice + Math.trunc(100 * (0.4 * Math.random() - 0.2) );
+
+      if(true){
+        const size = this.state.showRange[1] - this.state.showRange[0];
+        const max = timestamp > this.state.showRange[1] ? timestamp : this.state.showRange[1];
+        const min = max - size;
+        this.setState({showRange: [min, max]});
+      }
+
+      if( Math.random() < 0.25 ){
+        const quantity = 80 + Math.trunc(40 * Math.random());
+        if(hold > quantity && Math.random() < 0.5){
+          this.props.sellHold(quantity,currprice);
+          this.props.addRecord(timestamp,'2','2',2,currprice,quantity);
+        } else {
+          this.props.buyHold(quantity,currprice);
+          this.props.addRecord(timestamp,'1','1',1,currprice,quantity);
+        }
+      }
+
+      this.props.setHold(currprice);
+      this.props.addHistory(timestamp, currprice, hold);
     }
   }
 
@@ -70,13 +97,19 @@ class Main extends React.Component<MainProps>{
     if(this.state.isReady){
       return (
         <Layout className="theme">
-          <Header style={{ background: 'transparent', margin: '0 12%', minWidth: 720}}>
+          <Header className="layout-header">
             { InfoItem() }
           </Header>
-          <Content style={{ background: 'transparent' , margin: '0 20%', minWidth: 600}}>      
+          <Content className="layout-content">      
             <Switch>
-              <Route path="/history" component={history} />
-              <Route path="/statistic" component={statistic} />
+              <Route 
+                path="/record" 
+                component={()=> RecordShow(this.props.RecordState)} 
+              />
+              <Route 
+                path="/statistic" 
+                component={()=> StatisticShow(this.props.HoldState)} 
+              />
               <Route 
                 render={
                   () => StockShow({
@@ -89,7 +122,7 @@ class Main extends React.Component<MainProps>{
               />
             </Switch>
           </Content>
-          <Footer style={{ background: 'transparent' , margin: '0 12%', minWidth: 720}}>
+          <Footer className="layout-footer">
             { CtrlItem({upDate: this.state.isUpdate, setUpDate: this.setUpdate}) }
           </Footer>
         </Layout>
@@ -114,11 +147,12 @@ class Main extends React.Component<MainProps>{
 }
 
 const mapStateToProps = (state: MainState) =>({
-  HistoryState: state.historyState,
-  RecordState: state.recordState
+  HoldState: state.holdState,
+  RecordState: state.recordState,
+  HistoryState: state.historyState
 })
 
 export default connect(
   mapStateToProps,
-  { addHistory, addRecord }
+  { setHold, buyHold, sellHold, initHold, addRecord, addHistory }
 )(Main);
