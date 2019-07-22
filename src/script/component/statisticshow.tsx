@@ -7,7 +7,7 @@ export const StatisticShow = (props: HoldState) =>{
     <div>
       <Row gutter={{xs: 8, sm: 16, md: 24}}>
         <Col span={12}>
-        <Card style={{ height: 90, marginTop: 10 }}>
+        <Card>
           <Statistic
             title="买入"
             value={props.buytotal}
@@ -17,7 +17,7 @@ export const StatisticShow = (props: HoldState) =>{
         </Card>
         </Col>
         <Col span={12}>
-        <Card style={{ height: 90, marginTop: 10 }}>
+        <Card>
           <Statistic
             title="持仓"
             value={props.hold}
@@ -29,7 +29,7 @@ export const StatisticShow = (props: HoldState) =>{
       </Row>
       <Row gutter={{xs: 8, sm: 16, md: 24}}>
         <Col span={12}>
-        <Card style={{ height: 90, marginTop: 10 }}>
+        <Card>
           <Statistic
             title="卖出"
             value={props.selltotal}
@@ -39,7 +39,7 @@ export const StatisticShow = (props: HoldState) =>{
         </Card>
         </Col>
         <Col span={12}>
-        <Card style={{ height: 90, marginTop: 10 }}>
+        <Card>
           <Statistic
             title="单价"
             value={props.price}
@@ -51,7 +51,7 @@ export const StatisticShow = (props: HoldState) =>{
       </Row>
       <Row gutter={{xs: 8, sm: 16, md: 24}}>
         <Col span={12}>
-        <Card style={{ height: 90, marginTop: 10 }}>
+        <Card>
           <Statistic
             title="买卖盈耗"
             value={ 
@@ -69,7 +69,7 @@ export const StatisticShow = (props: HoldState) =>{
         </Card>
         </Col>
         <Col span={12}>
-        <Card style={{ height: 90, marginTop: 10 }}>
+        <Card>
           <Statistic
             title="权益"
             value={props.price * props.hold}

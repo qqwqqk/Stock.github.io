@@ -15,7 +15,7 @@ export const RecordShow = (props: RecordState) =>{
         onRow={Private.onClickRow}
         rowClassName={Private.setRowClassName}
         pagination={false}
-        scroll={{ y: 240 }}
+        scroll={{ y: 320 }}
       />
   )
 }
@@ -23,12 +23,13 @@ export const RecordShow = (props: RecordState) =>{
 namespace Private {
   export const columns = [
     {
-      width: '20%',
+      width: '30%',
       title: '成交时间',
-      dataIndex: 'timestamp'
+      dataIndex: 'timestamp',
+      render: (val: number) => <span>{new Date(val).toLocaleString()}</span>
     },
     {
-      width: '20%',
+      width: '10%',
       title: '方向',
       dataIndex: 'type',
       render: (val: number) => {
@@ -52,8 +53,9 @@ namespace Private {
     },
     {
       width: '20%',
-      title: '交易单价',
-      dataIndex: 'price'
+      title: '成交金额',
+      dataIndex: 'amount',
+      render: (val: number) => <span>{toThousands(val)}</span>
     }
   ];
 

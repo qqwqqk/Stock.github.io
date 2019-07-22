@@ -44,7 +44,19 @@ export const StockShow = (props: StockProps) =>{
 
   switch(progress){
     case 0:
-      return ( <Empty/> )
+      return ( 
+        <div>
+          <Empty/>
+          <Slider
+            range
+            min={sliderMin}
+            max={sliderMax}
+            tipFormatter={(value)=>{return `${new Date(value).toLocaleString()}`;}}
+            value={[min, max]}
+            onChange={props.setRange}
+          />
+        </div>
+      )
     case 50:
       return (
         <div>
@@ -52,7 +64,7 @@ export const StockShow = (props: StockProps) =>{
             <Tooltip crosshairs={{style:{strokeOpacity:0,fillOpacity:0}}}/>
             <View data={historySource} scale={showScale}>
               <Axis name="timestamp" position="bottom" visible={true} />
-              <Axis name="price" position="left" grid={null} />
+              <Axis name="price" position="left" grid={null} label={{ formatter: val => `${val}元` }}/>
               <Tooltip/>
               <Geom
                 type="line" position="timestamp*price" size={2} shape="smooth"
@@ -83,7 +95,7 @@ export const StockShow = (props: StockProps) =>{
             <Tooltip crosshairs={{style:{strokeOpacity:0,fillOpacity:0}}}/>
             <View data={historySource} scale={showScale}>
               <Axis name="timestamp" position="bottom" visible={true} />
-              <Axis name="price" position="left" grid={null} />
+              <Axis name="price" position="left" grid={null} label={{ formatter: val => `${val}元` }} />
               <Tooltip/>
               <Geom
                 type="line" position="timestamp*price" size={2} shape="smooth"
@@ -98,7 +110,7 @@ export const StockShow = (props: StockProps) =>{
             </View>
             <View data={recordSource} scale={showScale}>
               <Axis name="timestamp" position="top" visible={false}/>
-              <Axis name="quantity" position="right" grid={null} />
+              <Axis name="quantity" position="right" grid={null} label={{ formatter: val => `${val}元` }} />
               <Tooltip crosshairs={{type:'cross'}}/>
               <Geom
                 type="point" position="timestamp*quantity" size={4} shape={'circle'}
