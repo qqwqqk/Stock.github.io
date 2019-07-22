@@ -33,7 +33,7 @@ const BreadcrumbList = withRouter(props => {
 })
 
 export const InfoItem = () => {
-  const url: string = "https://github.com/qqwqqk/qqwqqk.github.io";
+  const url: string = "https://github.com/qqwqqk/Stock.github.io";
   const target: string = "_blank";
   return (
     <Row type='flex' align='middle' className='showinfo'>
