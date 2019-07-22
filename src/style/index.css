@@ -34,7 +34,7 @@
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: var(--theme-color);
+  background: var(--white-mask4);
 }
 
 /* index.css */
